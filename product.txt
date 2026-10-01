@@ -1,0 +1,4 @@
+1,Laptop,Electronics,1000.0
+2,Mouse,Computer,20.0
+3,Keyboard,Computer,50.0
+4,Monitor,Electronics,300.0
