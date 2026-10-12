@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.0">
+    <!-- Một "persistence unit" = một cấu hình kết nối DB, đặt tên là "remoteit" -->
+    <persistence-unit name="remoteit">
+        <!-- Các class entity cần quản lý -->
+        <class>com.example.jpa.Category</class>
+
+        <properties>
+            <!-- Kết nối DB -->
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5433/remoteit"/>
+            <property name="jakarta.persistence.jdbc.user" value="postgres"/>
+            <property name="jakarta.persistence.jdbc.password" value="postgres"/>
+
+            <!-- create = xóa bảng cũ và tự tạo bảng từ class mỗi lần chạy (CHỈ dùng khi học) -->
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
+
+            <!-- In ra câu SQL Hibernate tự sinh -->
+            <property name="hibernate.show_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>
