@@ -1,0 +1,5 @@
+com/example/remoteit/Job.class
+com/example/remoteit/JobService.class
+com/example/remoteit/JobController.class
+com/example/remoteit/JobRequest.class
+com/example/remoteit/Main.class
