@@ -1,7 +1,3 @@
-// BƯỚC 2: GOM SQL VÀO MỘT CLASS DAO (Data Access Object)
-// Chạy (Linux/Mac): javac Main.java && java -cp .:../lib/postgresql.jar Main
-// Chạy (Windows):   javac Main.java && java -cp .;../lib/postgresql.jar Main
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -32,7 +28,8 @@ class Category {
 
     @Override
     public String toString() {
-        return "Category{id=" + id + ", name=" + name + ", slug=" + slug + "}";
+        return "Category{id=" + id + ", name=" + name
+                + ", slug=" + slug + "}";
     }
 }
 
@@ -45,30 +42,46 @@ class CategoryDao {
     }
 
     public void createTable() throws SQLException {
-        conn.createStatement().execute("DROP TABLE IF EXISTS category CASCADE");
-        conn.createStatement().execute("CREATE TABLE category (id BIGSERIAL PRIMARY KEY, name VARCHAR(100), slug VARCHAR(100))");
+        conn.createStatement().execute(
+            "DROP TABLE IF EXISTS category CASCADE"
+        );
+        conn.createStatement().execute(
+            "CREATE TABLE category (id BIGSERIAL PRIMARY KEY, "
+            + "name VARCHAR(100), slug VARCHAR(100))"
+        );
     }
 
     public void save(Category c) throws SQLException {
-        PreparedStatement ps = conn.prepareStatement("INSERT INTO category (name, slug) VALUES (?, ?)");
+        PreparedStatement ps = conn.prepareStatement(
+            "INSERT INTO category (name, slug) VALUES (?, ?)"
+        );
         ps.setString(1, c.getName());
         ps.setString(2, c.getSlug());
         ps.executeUpdate();
     }
 
     public List<Category> findAll() throws SQLException {
-        ResultSet rs = conn.createStatement().executeQuery("SELECT id, name, slug FROM category");
+        ResultSet rs = conn.createStatement().executeQuery(
+            "SELECT id, name, slug FROM category"
+        );
+
         List<Category> categories = new ArrayList<>();
+
         while (rs.next()) {
             categories.add(mapRow(rs));
         }
+
         return categories;
     }
 
     public Category findById(long id) throws SQLException {
-        PreparedStatement ps = conn.prepareStatement("SELECT id, name, slug FROM category WHERE id = ?");
+        PreparedStatement ps = conn.prepareStatement(
+            "SELECT id, name, slug FROM category WHERE id = ?"
+        );
         ps.setLong(1, id);
+
         ResultSet rs = ps.executeQuery();
+
         return rs.next() ? mapRow(rs) : null;
     }
 
@@ -84,12 +97,15 @@ class CategoryDao {
 
 // ===== 3. Main: chỉ gọi hàm, không còn thấy SQL =====
 public class Main {
-    static final String URL = "jdbc:postgresql://localhost:5433/remoteit";
+    static final String URL =
+        "jdbc:postgresql://localhost:5433/remoteit";
     static final String USER = "postgres";
     static final String PASSWORD = "postgres";
 
     public static void main(String[] args) throws Exception {
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+        try (Connection conn =
+                 DriverManager.getConnection(URL, USER, PASSWORD)) {
+
             CategoryDao dao = new CategoryDao(conn);
             dao.createTable();
 
@@ -106,14 +122,3 @@ public class Main {
         }
     }
 }
-
-// Kết quả:
-// --- findAll ---
-// Category{id=1, name=Backend, slug=backend}
-// Category{id=2, name=Frontend, slug=frontend}
-// --- findById(2) ---
-// Category{id=2, name=Frontend, slug=frontend}
-//
-// Đã tốt hơn: Main gọn, SQL nằm một chỗ.
-// Vấn đề còn lại: thêm bảng tag → phải viết TagDao, gần như chép lại y hệt,
-// chỉ khác tên bảng và tên cột — mà tên cột thì đã nằm sẵn trong class rồi.
