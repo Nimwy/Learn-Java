@@ -1,0 +1,19 @@
+# PostgreSQL (dữ liệu) + Redis (cache) cho bài 15. Chạy: docker compose up -d
+services:
+  postgres:
+    image: postgres:16
+    container_name: bai15-postgres
+    environment:
+      POSTGRES_DB: remoteit
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432" # dùng 5433 để không trùng PostgreSQL cài sẵn ở 5432
+
+  redis:
+    image: redis:7-alpine
+    container_name: bai15-redis
+    ports:
+      - "6379:6379"
+    # Cache chỉ để tăng tốc; không cần lưu xuống đĩa cho bài học.
+    command: ["redis-server", "--save", "", "--appendonly", "no"]

@@ -1,0 +1,31 @@
+# PostgreSQL (dữ liệu) + Redis (cache) + RabbitMQ (message queue) cho bài 16.
+# Chạy: docker compose up -d
+services:
+  postgres:
+    image: postgres:16
+    container_name: bai16-postgres
+    environment:
+      POSTGRES_DB: remoteit
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432" # dùng 5433 để không trùng PostgreSQL cài sẵn ở 5432
+
+  redis:
+    image: redis:7-alpine
+    container_name: bai16-redis
+    ports:
+      - "6379:6379"
+    # Cache chỉ để tăng tốc; không cần lưu xuống đĩa cho bài học.
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: bai16-rabbitmq
+    environment:
+      # Không dùng user "guest" vì guest chỉ đăng nhập được từ localhost trong container.
+      RABBITMQ_DEFAULT_USER: remoteit
+      RABBITMQ_DEFAULT_PASS: remoteit
+    ports:
+      - "127.0.0.1:5672:5672"   # app kết nối AMQP
+      - "127.0.0.1:15672:15672" # giao diện quản lý RabbitMQ

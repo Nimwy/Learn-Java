@@ -1,0 +1,29 @@
+# PostgreSQL (nguồn dữ liệu) + Elasticsearch (search engine) cho bài 17.
+services:
+  postgres:
+    image: postgres:16
+    container_name: bai17-postgres
+    environment:
+      POSTGRES_DB: remoteit
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    container_name: bai17-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+
+volumes:
+  postgres-data:
+  es-data:

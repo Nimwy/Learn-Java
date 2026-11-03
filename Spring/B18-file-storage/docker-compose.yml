@@ -1,0 +1,19 @@
+# MinIO cho bài 18. Chạy: docker compose up -d
+# Console: http://localhost:9101 — remoteit / remoteit123
+services:
+  minio:
+    # "latest" tiện khi học; khi deploy thật nên ghim phiên bản cụ thể.
+    image: minio/minio:latest
+    container_name: bai18-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: remoteit
+      MINIO_ROOT_PASSWORD: remoteit123
+    ports:
+      - "9100:9000" # S3 API — dùng 9100 để tránh trùng MinIO đang chạy ở 9000
+      - "9101:9001" # giao diện quản lý MinIO
+    volumes:
+      - minio-data:/data
+
+volumes:
+  minio-data:

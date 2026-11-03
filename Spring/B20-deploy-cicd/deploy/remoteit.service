@@ -1,0 +1,21 @@
+[Unit]
+Description=Remote IT API
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+User=remoteit
+Group=remoteit
+WorkingDirectory=/opt/remoteit
+EnvironmentFile=/etc/remoteit/remoteit.env
+ExecStart=/usr/bin/java -jar /opt/remoteit/app.jar
+Restart=always
+RestartSec=5
+SuccessExitStatus=143
+
+# Giảm quyền tối thiểu cho process.
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

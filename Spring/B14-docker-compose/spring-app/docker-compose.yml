@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: bai14-app-postgres
+    environment:
+      POSTGRES_DB: remoteit
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d remoteit"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - app-db-data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: ../../bai-12-api-complete
+      dockerfile: ../bai-14-docker-compose/spring-app/Dockerfile
+    image: bai14-spring-app
+    container_name: bai14-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/remoteit
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    ports:
+      - "8091:8080" 
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  app-db-data:
